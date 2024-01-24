@@ -18,7 +18,7 @@ scp /home/$source/Desktop/Captures $user@192.168.1.11:/home/$user/Desktop
 
 echo starting transfer for panorama results
 
-scp /home/$source/Desktop/panaorama_results $user@192.168.1.11:/home/$user/Desktop
+scp /home/$source/Desktop/panaroma_results $user@192.168.1.11:/home/$user/Desktop
 
 echo transfer completed..
 

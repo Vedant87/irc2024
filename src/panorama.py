@@ -6,11 +6,11 @@ import cv2
 currdir=os.getcwd()
 user=os.getlogin()
 try:
-    os.mkdir(f"/home/{user}/Desktop/panorama_results")
+    os.mkdir(f"/home/{user}/Desktop/panaroma_results")
 except:
     num=1
 
-path = f'/home/{user}/Desktop/Captures/panorama_captures'
+path = f'/home/{user}/Desktop/Captures/panaroma_captures'
 images = []
 myList = os.listdir(path)
 listlen=len(myList)
@@ -18,7 +18,7 @@ myList.sort()
 print(f"Folder list{myList}")
 currentfolder=int(input("Enter the index of the folder you want to stich, starts from 0:"))
 currdirname=myList[currentfolder]
-path = f"/home/{user}/Desktop/Captures/panorama_captures/{currdirname}"
+path = f"/home/{user}/Desktop/Captures/panaroma_captures/{currdirname}"
 myList = os.listdir(path)
 listlen=len(myList)
 print(f"Photo list {myList}")
@@ -41,8 +41,8 @@ stitcher = cv2.Stitcher.create()
 # print(result)
 if (status == cv2.Stitcher_OK):
     print('Panorama Generated')
-    cv2.imwrite("/home/{user}/Desktop/panorama_results/panaroma_done.jpg", result)
-    cv2.imshow('Images',result)
+    cv2.imwrite("/home/{user}/Desktop/panaroma_results/panaroma_done.jpg", result)
+   # cv2.imshow('Images',result)
     cv2.waitKey()
 else:
     print('Not successful')
