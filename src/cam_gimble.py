@@ -8,8 +8,8 @@ p=Point()
 
 def callback(msg):
    
-    p.x=msg.axes[8]
-    p.y=-msg.axes[9]
+    p.x=-msg.axes[8]
+    p.y=msg.axes[9]
     
     
     pub.publish(p)
