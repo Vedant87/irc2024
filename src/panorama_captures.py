@@ -50,13 +50,13 @@ def capture_image():
 
     while(num==1):
         print("Enter 1 to take")
-        print(f"Current panaroma site is:{site_counter}")
+        print(f"Current panorama site is:{site_counter}")
         try:
             inp=int(input())
             if(inp==1):
                 counter=counter+1
                 if ret:
-                    cv2.imwrite(f"/home/{user}/Desktop/Captures/panaroma_captures/{timenow}/{counter}.jpg", image)
+                    cv2.imwrite(f"/home/{user}/Desktop/Captures/panorama_captures/{timenow}/{counter}.jpg", image)
                     
                 else:
                     print("No image detected. Please! try again")
