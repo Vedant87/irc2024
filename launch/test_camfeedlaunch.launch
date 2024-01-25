@@ -1,0 +1,12 @@
+<launch>
+<arg name="camera_index1" default="0"/>
+<arg name="camera_index2" default="1"/>
+
+   <node name="camera_1" pkg="irc2024" type="videofeed1">
+   <param name="index" type="int" value="$(camera_index1)"/>
+   </node>
+
+   <node name="camera_2" pkg="irc2024" type="videofeed2">
+   <param name="index" type="int" value="$(camera_index2)"/>
+   </node>
+</launch>
