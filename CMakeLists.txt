@@ -165,6 +165,9 @@ include_directories(
   add_executable(videofeed3 src/videofeed3.cpp)
   target_link_libraries(videofeed3 ${catkin_LIBRARIES})
   target_link_libraries(videofeed3 ${OpenCV_LIBRARIES})
+  add_executable(videofeeds src/videofeeds.cpp)
+  target_link_libraries(videofeeds ${catkin_LIBRARIES})
+  target_link_libraries(videofeeds ${OpenCV_LIBRARIES})
   add_executable(base_control src/base_control.cpp)
   target_link_libraries(base_control ${catkin_LIBRARIES})
   
