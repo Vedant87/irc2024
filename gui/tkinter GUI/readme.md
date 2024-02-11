@@ -1,6 +1,6 @@
-# Scripts for GUI and its testing
+Scripts for GUI and its testing
 
-# Packages tkinter and PIL have to installed using apt package manager
+Packages tkinter and PIL have to installed using apt package manager
 To install tkinter:
 sudo apt install python3-tk
 
