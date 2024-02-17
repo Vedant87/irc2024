@@ -126,7 +126,7 @@ if __name__ == "__main__":
     # port = int(sys.argv[2]) if len(sys.argv) > 2 else 5000
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--ip", type=str, required=False, default='192.168.1.11',
+    ap.add_argument("-i", "--ip", type=str, required=False, default='0.0.0.0',
         help="ip address of the device")
     ap.add_argument("-o", "--port", type=int, required=False, default=8000, 
         help="ephemeral port number of the server (1024 to 65535)")
