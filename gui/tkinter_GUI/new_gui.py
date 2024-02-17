@@ -15,15 +15,14 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (
      FigureCanvasTkAgg)
 from matplotlib import style
-from cv_bridge import CvBridge
 import cv2
+from cv_bridge import CvBridge
 import threading
 import subprocess
 from datetime import datetime
 import csv
 import os
-
-from  gui_stuff.msg import *
+from  irc2024.msg import *
 
 # global coordinate varibles
 atmos_x = []
@@ -41,7 +40,9 @@ co_y = []
 spectro_pointer = 0
 spectro_x = [410, 435, 460, 485, 510, 535, 560, 585, 610, 645, 680, 705, 730, 760, 810, 860, 900, 940]
 spectro_y = [0 for i in range(18)]
-
+terminator_process_1 = None
+terminator_process_2 = None
+terminator_process_3 = None
 
 # backend functions
 # callback functions
@@ -298,50 +299,63 @@ def panorama_button_click():
 def digi_button_click():
     flag_pub.publish(5)
 
+
+
+
 def vid_feed_click_1():
-    global feed_state_1
-    print(feed_state_1)
+    global feed_state_1, terminator_process_1
+
     if feed_state_1:
         feed_state_1 = 0
-        # subprocess.Popen(['./camfeed1.sh'])
-        # subprocess.Popen(['./videofeed1.sh'])
-        subprocess.Popen(["bash", "./bash_init.sh"])
+        terminator_process_1 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed1.sh'])
     else:
         try:
             feed_state_1 = 1
-            # os.system("pkill camfeed1")
-            # os.system("pkill videofeed1")
-            os.system("pkill hello_world")
-        except ProcessLookupError:
+            if terminator_process_1 is not None:
+                terminator_process_1 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed1_close.sh'])
+        except subprocess.CalledProcessError:
             pass
+
 
 def vid_feed_click_2():
-    global feed_state_2
+    global feed_state_2, terminator_process_2
+
     if feed_state_2:
         feed_state_2 = 0
-        # subprocess.Popen(['./camfeed2.sh'])
-        subprocess.Popen(['./videofeed2.sh'])
-    else:
-        try:
-            feed_state_2 =1
-            os.system("pkill hello_world")
-            # os.system("pkill camfeed2")
-            # os.system("pkill videofeed2")
-        except ProcessLookupError:
-            pass
-
-def vid_feed_click_3():
-    global feed_state_3
-    if feed_state_3:
-        feed_state_3 = 0
-        subprocess.Popen(['./camfeed3.sh'])
-        subprocess.Popen(['./videofeed3.sh'])
+        terminator_process_2 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed2.sh'])
     else:
         try:
             feed_state_2 = 1
-            os.system("pkill camfeed3")
-            os.system("pkill videofeed3")
-        except ProcessLookupError:
+            if terminator_process_2 is not None:
+                terminator_process_2 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed2_close.sh'])
+        except subprocess.CalledProcessError:
+            pass
+
+def vid_feed_click_3():
+    global feed_state_3, terminator_process_3
+
+    if feed_state_3:
+        feed_state_3 = 0
+        terminator_process_3 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed3.sh'])
+    else:
+        try:
+            feed_state_3 = 1
+            if terminator_process_3 is not None:
+                terminator_process_3 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed3_close.sh'])
+        except subprocess.CalledProcessError:
+            pass
+def vid_feed_click_new():
+    global feed_state_new, terminator_process_new
+
+    if feed_state_new:
+        feed_state_new = 0
+        terminator_process_new = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camlaunch.sh'])
+    else:
+        try:
+            feed_state_new = 1
+            if terminator_process_new is not None:
+                terminator_process_new = subprocess.Popen(['/path/to/your/new/bash/file_close.sh'])
+        except subprocess.CalledProcessError:
             pass
 
 # main program
@@ -458,22 +472,27 @@ note_controls.add(vid_feed, text="Video feeds")
 feed_frame_1 = tk.Frame(vid_feed)
 feed_frame_2 = tk.Frame(vid_feed)
 feed_frame_3 = tk.Frame(vid_feed)
+feed_frame_new = tk.Frame(vid_feed)
 
 feed_frame_1.pack()
 feed_frame_2.pack()
 feed_frame_3.pack()
+feed_frame_new.pack()
 
 feed_state_1 = 1
 feed_state_2 = 1
 feed_state_3 = 1
+feed_state_new=1
 
 feed_but_1 = tk.Button(master=feed_frame_1, text="Feed 1", command=vid_feed_click_1)
 feed_but_2 = tk.Button(master=feed_frame_2, text="Feed 2", command=vid_feed_click_2)
 feed_but_3 = tk.Button(master=feed_frame_3, text="Feed 3", command=vid_feed_click_3)
+feed_but_new = tk.Button(master=feed_frame_new, text="New Feed", command=vid_feed_click_new)
 
 feed_but_1.pack(padx=25, pady=25)
 feed_but_2.pack(padx=25, pady=25)
 feed_but_3.pack(padx=25, pady=25)
+feed_but_new.pack(padx=25, pady=25)
 
 plt.tight_layout()
 
