@@ -34,6 +34,8 @@ sensor_x = []
 co2_y = []
 ch4_y = []
 co_y = []
+user=os.getlogin()
+
 
 # spectro_time = datetime.now()
 
@@ -307,27 +309,28 @@ def vid_feed_click_1():
 
     if feed_state_1:
         feed_state_1 = 0
-        terminator_process_1 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed1.sh'])
+        terminator_process_1 = subprocess.Popen(['./bash/camfeed1.sh'])
     else:
         try:
             feed_state_1 = 1
             if terminator_process_1 is not None:
-                terminator_process_1 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed1_close.sh'])
+                terminator_process_1 = subprocess.Popen(['./bash/camfeed1_close.sh'])
         except subprocess.CalledProcessError:
             pass
 
 
 def vid_feed_click_2():
     global feed_state_2, terminator_process_2
+    
 
     if feed_state_2:
         feed_state_2 = 0
-        terminator_process_2 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed2.sh'])
+        terminator_process_2 = subprocess.Popen([f'/home/{user}/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed2.sh'])
     else:
         try:
             feed_state_2 = 1
             if terminator_process_2 is not None:
-                terminator_process_2 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed2_close.sh'])
+                terminator_process_2 = subprocess.Popen([f'/home/{user}/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed2_close.sh'])
         except subprocess.CalledProcessError:
             pass
 
@@ -336,12 +339,12 @@ def vid_feed_click_3():
 
     if feed_state_3:
         feed_state_3 = 0
-        terminator_process_3 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed3.sh'])
+        terminator_process_3 = subprocess.Popen(['/home/{user}/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed3.sh'])
     else:
         try:
             feed_state_3 = 1
             if terminator_process_3 is not None:
-                terminator_process_3 = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed3_close.sh'])
+                terminator_process_3 = subprocess.Popen(['/home/{user}/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camfeed3_close.sh'])
         except subprocess.CalledProcessError:
             pass
 def vid_feed_click_new():
@@ -349,12 +352,12 @@ def vid_feed_click_new():
 
     if feed_state_new:
         feed_state_new = 0
-        terminator_process_new = subprocess.Popen(['/home/pili/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camlaunch.sh'])
+        terminator_process_new = subprocess.Popen(['/home/{user}/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camlaunch.sh'])
     else:
         try:
             feed_state_new = 1
             if terminator_process_new is not None:
-                terminator_process_new = subprocess.Popen(['/path/to/your/new/bash/file_close.sh'])
+                terminator_process_new = subprocess.Popen(['/home/{user}/catkin_ws/src/irc2024/gui/tkinter_GUI/bash/camlaunchclose.sh'])
         except subprocess.CalledProcessError:
             pass
 
