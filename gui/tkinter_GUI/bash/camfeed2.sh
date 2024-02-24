@@ -43,4 +43,5 @@ simulate_input "bg"
 
 simulate_input "disown -h"
 simulate_input "exit"
+simulate_input "exit"
 

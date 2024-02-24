@@ -39,6 +39,8 @@ sleep 2  # Increase the delay to allow Terminator to start
 ssh_login
 simulate_input "rosnode kill video_frame1/image"
 simulate_input "exit"
+simulate_input "exit"
+
 sleep 1
 
 

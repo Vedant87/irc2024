@@ -6,7 +6,7 @@
 
 ros::NodeHandle nh;
 
-#define IN1 6 
+#define IN1 4
 #define BAUDRATE 115200
 Cytron_SmartDriveDuo smartDriveDuo30(SERIAL_SIMPLIFIED, IN1, BAUDRATE);
 geometry_msgs::Point vels;
@@ -41,4 +41,3 @@ void loop()
   smartDriveDuo30.control(left_wheel,right_wheel);
   nh.spinOnce();
 }
-

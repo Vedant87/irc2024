@@ -9,7 +9,7 @@ int main(int argc, char** argv)
   // Check if video source has been passed as a parameter
   if(argv[1] == NULL) return 1;
 
-  ros::init(argc, argv, "image_publisher",ros::init_options::AnonymousName);
+  ros::init(argc, argv, "video2", ros::init_options::AnonymousName);
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
   image_transport::Publisher pub = it.advertise("video_frame2/image", 1);
