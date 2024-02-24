@@ -23,6 +23,7 @@ from datetime import datetime
 import csv
 import os
 from  irc2024.msg import *
+import paramiko
 
 # global coordinate varibles
 atmos_x = []
@@ -309,28 +310,31 @@ def vid_feed_click_1():
 
     if feed_state_1:
         feed_state_1 = 0
-        terminator_process_1 = subprocess.Popen([f'/home/{user}/kratos_urc22/src/irc2024/gui/tkinter_GUI/bash/camfeed1.sh'])
+        # Execute the equivalent of camfeed1.sh using SSH
+        subprocess.run(["ssh", "kratos@192.168.1.10", "rosrun irc2024 videofeed1 0"])
     else:
         try:
             feed_state_1 = 1
+            # Send a signal to stop the previous process if it exists
             if terminator_process_1 is not None:
-                terminator_process_1 = subprocess.Popen([f'/home/{user}/kratos_urc22/src/irc2024/gui/tkinter_GUI/bash/camfeed1_close.sh'])
+                terminator_process_1.terminate()
         except subprocess.CalledProcessError:
             pass
 
 
 def vid_feed_click_2():
     global feed_state_2, terminator_process_2
-    
 
     if feed_state_2:
         feed_state_2 = 0
-        terminator_process_2 = subprocess.Popen([f'/home/{user}/kratos_urc22/src/irc2024/gui/tkinter_GUI/bash/camfeed2.sh'])
+        # Execute the equivalent of camfeed2.sh using SSH
+        subprocess.run(["ssh", "kratos@192.168.1.10", "rosrun irc2024 videofeed2 1"])
     else:
         try:
             feed_state_2 = 1
+            # Send a signal to stop the previous process if it exists
             if terminator_process_2 is not None:
-                terminator_process_2 = subprocess.Popen([f'/home/{user}/kratos_urc22/src/irc2024/gui/tkinter_GUI/bash/camfeed2_close.sh'])
+                terminator_process_2.terminate()
         except subprocess.CalledProcessError:
             pass
 
@@ -339,28 +343,71 @@ def vid_feed_click_3():
 
     if feed_state_3:
         feed_state_3 = 0
-        terminator_process_3 = subprocess.Popen([f'/home/{user}/kratos_urc22/src/irc2024/gui/tkinter_GUI/bash/camfeed3.sh'])
+        # Execute the equivalent of camfeed3.sh using SSH
+        subprocess.run(["ssh", "kratos@192.168.1.10", "rosrun irc2024 videofeed3 2"])
     else:
         try:
             feed_state_3 = 1
+            # Send a signal to stop the previous process if it exists
             if terminator_process_3 is not None:
-                terminator_process_3 = subprocess.Popen([f'/home/{user}/kratos_urc22/src/irc2024/gui/tkinter_GUI/bash/camfeed3_close.sh'])
+                terminator_process_3.terminate()
         except subprocess.CalledProcessError:
             pass
+
+def ssh_login(ssh_client):
+    ssh_client.exec_command("ssh kratos@192.168.1.10")
+    ssh_client.exec_command("kratos123")
+    ssh_client.exec_command("clear")
+
+def simulate_input(ssh_client, command):
+    ssh_client.exec_command(command)
+
+def terminate_remote_nodes(ssh_client):
+    commands = [
+        "rosnode kill image_view1",
+        "rosnode kill image_view2",
+        "rosnode kill image_view3",
+    ]
+    for command in commands:
+        simulate_input(ssh_client, command)
+
+def launch_remote_rosnode(ssh_client):
+    simulate_input(ssh_client, "roslaunch irc2024 cameras_feed.launch")
+
 def vid_feed_click_new():
-    global feed_state_new, terminator_process_new
+    global feed_state_new, ssh_client_new
 
     if feed_state_new:
         feed_state_new = 0
-        terminator_process_new = subprocess.Popen([f'/home/{user}/kratos_urc22/src/irc2024/gui/tkinter_GUI/bash/camlaunch.sh'])
+
+        ssh_client_new = paramiko.SSHClient()
+        ssh_client_new.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh_client_new.connect("192.168.1.10", username="kratos", password="kratos123")
+
+        launch_remote_rosnode(ssh_client_new)
     else:
         try:
             feed_state_new = 1
-            if terminator_process_new is not None:
-                terminator_process_new = subprocess.Popen([f'/home/{user}/kratos_urc22/src/irc2024/gui/tkinter_GUI/bash/camlaunchclose.sh'])
-        except subprocess.CalledProcessError:
-            pass
+            if ssh_client_new is not None:
+                terminate_remote_nodes(ssh_client_new)
+                ssh_client_new.close()
+        except Exception as e:
+            print(f"Error: {e}")
 
+            
+def check_ping_status():
+    try:
+        subprocess.check_output(["ping", "-c", "1", "192.168.1.10"], timeout=1)
+        return True  # Ping successful
+    except subprocess.CalledProcessError:
+        return False  # Ping unsuccessful
+
+def update_status_label():
+    status = check_ping_status()
+    if status:
+        status_label.config(text="Status: Connected", fg="green")
+    else:
+        status_label.config(text="Status: Disconnected", fg="red")
 # main program
 rospy.init_node("LD_gui", anonymous=True)
 
@@ -469,6 +516,7 @@ digi_button.pack(padx=15, pady=25)
 # Controls gui
 # camera feeds
 vid_feed = tk.Frame(note_controls)
+rover_status = tk.Frame(note_controls)
 
 note_controls.add(vid_feed, text="Video feeds")
 
@@ -476,6 +524,7 @@ feed_frame_1 = tk.Frame(vid_feed)
 feed_frame_2 = tk.Frame(vid_feed)
 feed_frame_3 = tk.Frame(vid_feed)
 feed_frame_new = tk.Frame(vid_feed)
+rover_status = tk.Frame(note_controls)
 
 feed_frame_1.pack()
 feed_frame_2.pack()
@@ -486,6 +535,14 @@ feed_state_1 = 1
 feed_state_2 = 1
 feed_state_3 = 1
 feed_state_new=1
+
+status_label = tk.Label(rover_status, text="Status: Connecting...", fg="orange")
+status_label.pack(padx=15, pady=25)
+
+check_status_button = tk.Button(rover_status, text="Check Status", command=update_status_label)
+check_status_button.pack(padx=15, pady=25)
+
+note_controls.add(rover_status, text="Status")
 
 feed_but_1 = tk.Button(master=feed_frame_1, text="Feed 1", command=vid_feed_click_1)
 feed_but_2 = tk.Button(master=feed_frame_2, text="Feed 2", command=vid_feed_click_2)
