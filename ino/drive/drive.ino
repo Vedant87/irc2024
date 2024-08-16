@@ -6,22 +6,39 @@
 
 ros::NodeHandle nh;
 
-#define IN1 6 
+#define IN1 9
+#define IN2 10
+#define IN3 11
 #define BAUDRATE 115200
-Cytron_SmartDriveDuo smartDriveDuo30(SERIAL_SIMPLIFIED, IN1, BAUDRATE);
+Cytron_SmartDriveDuo motor_back(SERIAL_SIMPLIFIED, IN1, BAUDRATE);
+Cytron_SmartDriveDuo motor_mid(SERIAL_SIMPLIFIED, IN2, BAUDRATE);
+Cytron_SmartDriveDuo motor_front(SERIAL_SIMPLIFIED, IN3, BAUDRATE);
+
 geometry_msgs::Point vels;
+
 ros::Publisher pub1("feedback", &vels);
 
- float right_wheel=0; 
- float left_wheel=0;
+ float right_wheel_mid=0; 
+ float left_wheel_mid=0;
+  float right_wheel_front=0; 
+ float left_wheel_front=0;
+  float right_wheel_back=0; 
+ float left_wheel_back=0;
+ float velx,velz;
+ 
 
 
 void callback(const geometry_msgs::Point& msg)
-{
-  
+{ 
+  velx=msg.x*0.67;
+  velz=msg.z*0.67;
 
-  right_wheel = msg.x;
-  left_wheel = msg.z;
+  right_wheel_mid = velx;
+  left_wheel_mid = velz;
+  right_wheel_front = velx*1.488;
+  left_wheel_mid_front = velz*1.488;
+  right_wheel_back = velx*1.33;
+  left_wheel_back = velz*1.33;
   vels.x = right_wheel;
   vels.y = left_wheel;
   pub1.publish(&vels);
@@ -38,7 +55,8 @@ void setup()
 
 void loop()
 {
-  smartDriveDuo30.control(left_wheel,right_wheel);
+  motor_back.control(left_wheel_back,right_wheel_back);
+  motor_mid.control(left_wheel_mid,right_wheel_mid);
+  motor_front.control(left_wheel_front,right_wheel_front);
   nh.spinOnce();
 }
-
