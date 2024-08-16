@@ -6,9 +6,9 @@
 
 ros::NodeHandle nh;
 
-#define IN1 9
-#define IN2 10
-#define IN3 11
+#define IN1 17
+#define IN2 16
+#define IN3 21
 #define BAUDRATE 115200
 Cytron_SmartDriveDuo motor_back(SERIAL_SIMPLIFIED, IN1, BAUDRATE);
 Cytron_SmartDriveDuo motor_mid(SERIAL_SIMPLIFIED, IN2, BAUDRATE);
