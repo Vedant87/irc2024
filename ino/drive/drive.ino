@@ -24,7 +24,7 @@ ros::Publisher pub1("feedback", &vels);
  float left_wheel_front=0;
   float right_wheel_back=0; 
  float left_wheel_back=0;
- float velx,velz;
+ float velx,velz=0;
  
 
 
