@@ -32,7 +32,17 @@ void callback(const geometry_msgs::Point& msg)
 { 
   velx=msg.x*0.67;
   velz=msg.z*0.67;
-
+ angular=abs((velx-velz))
+ 
+  if(angular<5){
+   right_wheel_mid = velx;
+  left_wheel_mid = velz;
+  right_wheel_front = velx;
+  left_wheel_mid_front = velz;
+  right_wheel_back = velx;
+  left_wheel_back = velz;
+  }
+else{
   right_wheel_mid = velx;
   left_wheel_mid = velz;
   right_wheel_front = velx*1.488;
@@ -41,8 +51,9 @@ void callback(const geometry_msgs::Point& msg)
   left_wheel_back = velz*1.33;
   vels.x = right_wheel;
   vels.y = left_wheel;
-  pub1.publish(&vels);
+  
 }
+pub1.publish(&vels);
 
 ros::Subscriber<geometry_msgs::Point> sub("/rover",&callback);
 
